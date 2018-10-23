@@ -1,0 +1,62 @@
+The following are the steps to be followed for influxdb authentication:
+1.Create at least one admin user
+	create user user with password ‘password’
+	grant all privileges to user
+
+	Note: Authentication should be disabled in influxdb.conf file while creating first admin user.
+
+2. Enable authentication in influxdb.conf file under [http] section and uncomment it, if commented.
+
+[http]
+   enabled = true
+   bind-address = ":8086"
+   auth-enabled = true
+   log-enabled = true
+   write-tracing = false
+   pprof-enabled = true
+   https-enabled = false
+   https-certificate = "/etc/ssl/influxdb.pem"
+
+
+3.Restart Influxdb 
+1.	Authenticate with HTTP ALI 
+2.	Authenticate with CLI
+Using command auth <username>:     <password>:
+ 
+ 
+4. Authenticating telegraf requests to influxdb
+Uncomment username and password in telegraf.conf file.
+Restart telegraf
+
+###############################################################################
+#                                  OUTPUTS                                    #
+###############################################################################
+
+# Configuration for influxdb server to send metrics to
+[[outputs.influxdb]]
+  # The full HTTP or UDP endpoint URL for your InfluxDB instance.
+  # Multiple urls can be specified but it is assumed that they are part of the same
+  # cluster, this means that only ONE of the urls will be written to each interval.
+  # urls = ["udp://127.0.0.1:8089"] # UDP endpoint example
+  urls = ["http://127.0.0.1:8086"] # required
+  # The target database for metrics (telegraf will create it if not exists)
+  database = "telegraf1" # required
+  # Precision of writes, valid values are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+  # note: using second precision greatly helps InfluxDB compression
+  precision = "s"
+
+  ## Write timeout (for the InfluxDB client), formatted as a string.
+  ## If not provided, will default to 5s. 0s means no timeout (not recommended).
+  timeout = "5s"
+   username = "telegraf"
+   password = "metrics" 
+
+5. Authenticating jmeter requests to influxdb
+Provide username and password in jmeter parameters section.
+
+ 
+
+
+
+
+
